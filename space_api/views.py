@@ -1,0 +1,132 @@
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+import requests
+from huggingface_hub import InferenceClient
+from django.conf import settings
+import random
+import logging
+
+logger = logging.getLogger(__name__)
+
+NASA_API_KEY = settings.NASA_API_KEY
+HF_API_KEY = settings.HF_API_KEY
+
+# Fallback image data
+FALLBACK_IMAGE = {
+    'url': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa',
+    'title': 'Space View',
+    'explanation': 'Unable to load image at this time.',
+    'date': '2024-01-01',
+    'copyright': ''
+}
+
+def format_nasa_response(data):
+    """Format NASA API response to match expected structure"""
+    return {
+        'url': data.get('url', FALLBACK_IMAGE['url']),
+        'title': data.get('title', FALLBACK_IMAGE['title']),
+        'explanation': data.get('explanation', FALLBACK_IMAGE['explanation']),
+        'date': data.get('date', FALLBACK_IMAGE['date']),
+        'copyright': data.get('copyright', '')
+    }
+
+@api_view(['GET'])
+def get_apod(request):
+    try:
+        if not NASA_API_KEY or NASA_API_KEY == 'DEMO_KEY':
+            logger.warning('NASA API key not configured, using fallback data')
+            return Response(FALLBACK_IMAGE)
+
+        response = requests.get(
+            f'https://api.nasa.gov/planetary/apod?api_key={NASA_API_KEY}',
+            timeout=5
+        )
+        
+        if not response.ok:
+            logger.error(f'NASA API error: {response.status_code} - {response.text}')
+            return Response(FALLBACK_IMAGE)
+
+        data = response.json()
+        formatted_data = format_nasa_response(data)
+        return Response(formatted_data)
+    except requests.RequestException as e:
+        logger.error(f'Request error in get_apod: {str(e)}')
+        return Response(FALLBACK_IMAGE)
+    except Exception as e:
+        logger.error(f'Unexpected error in get_apod: {str(e)}')
+        return Response(FALLBACK_IMAGE)
+
+@api_view(['GET'])
+def get_space_images(request):
+    count = min(int(request.GET.get('count', 10)), 20)  # Limit max count to 20
+    try:
+        if not NASA_API_KEY or NASA_API_KEY == 'DEMO_KEY':
+            logger.warning('NASA API key not configured, using fallback data')
+            return Response([FALLBACK_IMAGE] * count)
+
+        response = requests.get(
+            f'https://api.nasa.gov/planetary/apod?api_key={NASA_API_KEY}&count={count}',
+            timeout=5
+        )
+        
+        if not response.ok:
+            logger.error(f'NASA API error: {response.status_code} - {response.text}')
+            return Response([FALLBACK_IMAGE] * count)
+
+        data = response.json()
+        images = [format_nasa_response(item) for item in data]
+        return Response(images)
+    except requests.RequestException as e:
+        logger.error(f'Request error in get_space_images: {str(e)}')
+        return Response([FALLBACK_IMAGE] * count)
+    except Exception as e:
+        logger.error(f'Unexpected error in get_space_images: {str(e)}')
+        return Response([FALLBACK_IMAGE] * count)
+
+@api_view(['POST'])
+def chat_response(request):
+    message = request.data.get('message', '')
+    try:
+        if not HF_API_KEY or HF_API_KEY == 'hf_demo':
+            return Response({
+                'response': "I'm here to help you learn about space! You can ask me about satellites, space debris, astronomy, or space exploration."
+            })
+
+        client = InferenceClient(token=HF_API_KEY)
+        response = client.text_generation(
+            "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
+            f"You are a helpful AI assistant specializing in astronomy and space science.\nUser: {message}\nAssistant:",
+            max_new_tokens=200,
+            temperature=0.7,
+            top_p=0.95,
+            repetition_penalty=1.2,
+        )
+        return Response({'response': response})
+    except Exception as e:
+        logger.error(f'Error in chat_response: {str(e)}')
+        return Response({
+            'response': "I'm here to help you learn about space! You can ask me about satellites, space debris, astronomy, or space exploration."
+        })
+
+@api_view(['GET'])
+def space_debris(request):
+    try:
+        debris = []
+        for i in range(50):
+            debris.append({
+                'id': f'debris-{i}',
+                'name': f'Space Object {i}',
+                'type': 'debris' if random.random() > 0.5 else 'satellite',
+                'coordinates': {
+                    'lat': random.uniform(-90, 90),
+                    'lng': random.uniform(-180, 180),
+                },
+                'altitude': random.uniform(200, 1200),
+                'velocity': random.uniform(5, 25),
+                'risk': random.choice(['high', 'medium', 'low']),
+            })
+        return Response(debris)
+    except Exception as e:
+        logger.error(f'Error in space_debris: {str(e)}')
+        return Response([])
