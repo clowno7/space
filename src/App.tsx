@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Satellite,
   AlertTriangle,
@@ -288,7 +288,7 @@ function App() {
             )}
 
             {/* APOD Section */}
-            {apod && (
+            {apod ? (
               <div className="bg-slate-800/80 backdrop-blur-sm rounded-lg p-4 md:p-6 border border-slate-700">
                 <h2 className="text-lg md:text-xl font-bold mb-4">
                   Astronomy Picture of the Day
@@ -303,7 +303,7 @@ function App() {
                 <h3 className="text-lg font-semibold mb-2">{apod.title}</h3>
                 <p className="text-gray-300">{apod.explanation}</p>
               </div>
-            )}
+            ) : null}
 
             {/* Recent Alerts */}
             <div className="bg-slate-800/80 backdrop-blur-sm rounded-lg p-4 md:p-6 border border-slate-700">
