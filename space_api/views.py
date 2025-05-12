@@ -113,18 +113,32 @@ def chat_response(request):
 def space_debris(request):
     try:
         debris = []
-        for i in range(50):
+        num_debris = 50
+        for i in range(num_debris):
+            object_type = 'debris' if random.random() > 0.7 else 'satellite'
+            
+            # More realistic altitude distribution
+            if object_type == 'debris':
+                altitude = random.uniform(200, 2000)  # Debris tends to be lower
+            else:
+                altitude = random.uniform(300, 36000) # Satellites can be much higher
+
+            # More realistic risk distribution (higher chance of low risk)
+            risk_options = ['low', 'medium', 'high']
+            risk_weights = [0.7, 0.2, 0.1]  # Probabilities for low, medium, high risk
+            risk = random.choices(risk_options, risk_weights)[0]
+
             debris.append({
                 'id': f'debris-{i}',
                 'name': f'Space Object {i}',
-                'type': 'debris' if random.random() > 0.5 else 'satellite',
+                'type': object_type,
                 'coordinates': {
                     'lat': random.uniform(-90, 90),
                     'lng': random.uniform(-180, 180),
                 },
-                'altitude': random.uniform(200, 1200),
+                'altitude': altitude,
                 'velocity': random.uniform(5, 25),
-                'risk': random.choice(['high', 'medium', 'low']),
+                'risk': risk,
             })
         return Response(debris)
     except Exception as e:
