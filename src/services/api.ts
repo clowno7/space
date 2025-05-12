@@ -32,7 +32,7 @@ export const getAstronomyPictureOfDay = async (): Promise<AstronomyPicture> => {
       media_type: "image",
       service_version: "v1",
     };
-
+  }
 };
 
 export const getSpaceImages = async (

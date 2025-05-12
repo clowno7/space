@@ -356,12 +356,10 @@ function App() {
             </div>
           </main>
         </div>
-
         {/* AI Chat Widget */}
         <AIChat />
       </div>
     </ErrorBoundary>
   );
 }
-
 export default App;
