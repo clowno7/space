@@ -12,7 +12,8 @@
   "dependencies": {
     "@huggingface/inference": "2.6.1",
     "auth0-js": "^9.28.0",
-    "axios": "1.6.2",
+    "axios": "^1.9.0",
+    "esbuild": "^0.19.1",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

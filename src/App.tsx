@@ -94,16 +94,20 @@ function App() {
               ? "w-64 translate-x-0"
               : "w-20 -translate-x-full md:translate-x-0"
           }`}
+          style={{
+            background: `linear-gradient(to right, #1e293b, #2d3748)`,
+            animation: `gradientAnimation 10s ease infinite`,
+          }}
         >
-          <div className="flex items-center justify-between p-4">
+          <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-slate-700">
             <div
               className={`flex items-center ${
                 isSidebarOpen ? "gap-3" : "gap-0"
               }`}
             >
-              <Satellite className="text-blue-400" size={24} />
+              <Satellite className="text-white" size={36} />
               <span
-                className={`text-xl font-bold whitespace-nowrap transition-opacity duration-300 ${
+                className={`text-white text-2xl font-bold whitespace-nowrap transition-opacity duration-300 ${
                   isSidebarOpen
                     ? "opacity-100"
                     : "opacity-0 w-0 overflow-hidden"
@@ -133,11 +137,11 @@ function App() {
               <a
                 key={index}
                 href="#"
-                className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-700 transition-all hover:translate-x-1"
+                className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-600 transition-all hover:translate-x-1 text-white font-medium"
               >
-                <item.icon size={20} className="text-gray-400" />
+                <item.icon size={28} className="text-white" />
                 <span
-                  className={`whitespace-nowrap transition-opacity duration-300 ${
+                  className={`text-white whitespace-nowrap transition-opacity duration-300 ${
                     isSidebarOpen
                       ? "opacity-100"
                       : "opacity-0 w-0 overflow-hidden"
@@ -150,12 +154,12 @@ function App() {
           </nav>
 
           {/* Sign Out Button */}
-          <div className="absolute bottom-4 left-4 right-4">
+          <div className="absolute bottom-6 left-6 right-6">
             <div
               className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-700 transition-all hover:translate-x-1 cursor-pointer"
               onClick={() => setUser(null)}
             >
-              <LogOut size={20} className="text-gray-400" />
+              <LogOut size={28} className="text-white" />
               <span
                 className={`whitespace-nowrap transition-opacity duration-300 ${
                   isSidebarOpen
@@ -199,7 +203,7 @@ function App() {
           {/* Main Content */}
           <main className="p-4 md:p-6 space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 {
                   label: "Active Debris",
@@ -227,7 +231,7 @@ function App() {
                   className="bg-slate-800/80 backdrop-blur-sm rounded-lg p-4 md:p-6 border border-slate-700 hover:translate-y-[-2px] transition-transform"
                 >
                   <div
-                    className={`${stat.color} w-8 h-8 md:w-12 md:h-12 rounded-lg flex items-center justify-center mb-4`}
+                    className={`${stat.color} w-12 h-12 md:w-20 md:h-20 rounded-lg flex items-center justify-center mb-8`}
                   >
                     <Satellite size={20} className="text-white" />
                   </div>

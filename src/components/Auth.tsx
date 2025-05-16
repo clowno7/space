@@ -1,22 +1,12 @@
-import React from "react";
 import { useStore } from "../store";
-import { User } from "../types";
-import Auth0 from "auth0-js";
-
-const auth0 = new Auth0.WebAuth({
-  domain: "YOUR_AUTH0_DOMAIN",
-  clientID: "YOUR_AUTH0_CLIENT_ID",
-  redirectUri: "http://localhost:3000",
-  responseType: "token id_token",
-  scope: "openid profile email",
-});
+import { useState } from "react";
 
 export function Auth() {
   const setUser = useStore((state) => state.setUser);
+  const [formError, setFormError] = useState(null);
 
   const handleLogin = () => {
-    // Simulate Auth0 authentication
-    const mockUser: User = {
+    const mockUser = {
       id: "1",
       email: "test@example.com",
       name: "Test User",
@@ -26,16 +16,24 @@ export function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900">
-      <div className="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-10" />
-      <div className="bg-slate-800 p-8 rounded-lg shadow-xl w-full max-w-md relative">
-        <h2 className="text-2xl font-bold text-white mb-6">Sign In</h2>
-        <button
-          onClick={handleLogin}
-          className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-        >
-          Sign In with Auth0
-        </button>
+    <div
+      className="flex min-h-screen flex-col items-center justify-center"
+      style={{
+        background: `linear-gradient(to right, #1e293b, #2d3748)`,
+        animation: `gradientAnimation 10s ease infinite`,
+        height: "100vh",
+      }}
+    >
+      <div className="flex flex-col items-center justify-center h-full">
+        <div className="bg-slate-800 p-8 rounded-lg shadow-xl w-full max-w-md relative">
+          <h2 className="text-2xl font-bold text-white mb-6">Sign In</h2>
+          <button
+            onClick={handleLogin}
+            className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+          >
+            Sign In with Auth0
+          </button>
+        </div>
       </div>
     </div>
   );
