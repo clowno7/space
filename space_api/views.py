@@ -95,8 +95,8 @@ def chat_response(request):
 
         client = InferenceClient(token=HF_API_KEY)
         response = client.text_generation(
-            "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
-            f"You are a helpful AI assistant specializing in astronomy and space science.\nUser: {message}\nAssistant:",
+            model="OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
+            prompt=f"You are a helpful AI assistant specializing in astronomy and space science.\nUser: {message}\nAssistant:",
             max_new_tokens=200,
             temperature=0.7,
             top_p=0.95,
@@ -144,3 +144,52 @@ def space_debris(request):
     except Exception as e:
         logger.error(f'Error in space_debris: {str(e)}')
         return Response([])
+
+@api_view(['GET'])
+def alerts(request):
+    alerts_data = [
+        {
+            "title": "High-Risk Collision Detected",
+            "time": "2 minutes ago",
+            "severity": "high",
+        },
+        {
+            "title": "New Debris Field Identified",
+            "time": "15 minutes ago",
+            "severity": "medium",
+        },
+        {
+            "title": "Satellite Path Adjustment Required",
+            "time": "1 hour ago",
+            "severity": "low",
+        },
+    ]
+    return Response(alerts_data)
+
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    try:
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            return Response({'error': 'Email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(email=email).exists():
+            return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.create_user(username=email, email=email, password=password)
+        token = Token.objects.create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        logger.exception(f"Error during registration: {e}")
+        return Response({'error': 'Registration failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

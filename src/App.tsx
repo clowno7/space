@@ -99,15 +99,15 @@ function App() {
             animation: `gradientAnimation 10s ease infinite`,
           }}
         >
-          <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-slate-700">
+          <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-gray-700 dark:border-gray-600">
             <div
               className={`flex items-center ${
                 isSidebarOpen ? "gap-3" : "gap-0"
               }`}
             >
-              <Satellite className="text-white" size={36} />
+              <Satellite className="text-white" size={56} />
               <span
-                className={`text-white text-2xl font-bold whitespace-nowrap transition-opacity duration-300 ${
+                className={`text-white text-3xl font-bold whitespace-nowrap transition-opacity duration-300 ${
                   isSidebarOpen
                     ? "opacity-100"
                     : "opacity-0 w-0 overflow-hidden"
@@ -127,19 +127,44 @@ function App() {
           {/* Navigation */}
           <nav className="space-y-2 p-4">
             {[
-              { icon: BarChart3, label: "Dashboard" },
-              { icon: AlertTriangle, label: "Alerts" },
-              { icon: Info, label: "Information" },
-              { icon: Users, label: "Community" },
-              { icon: MessageSquare, label: "Forum" },
-              { icon: Settings, label: "Settings" },
+              {
+                icon: BarChart3,
+                label: "Dashboard",
+                onClick: () => alert("Dashboard"),
+              },
+              {
+                icon: AlertTriangle,
+                label: "Alerts",
+                onClick: () => alert("Alerts"),
+              },
+              {
+                icon: Info,
+                label: "Information",
+                onClick: () => alert("Information"),
+              },
+              {
+                icon: Users,
+                label: "Community",
+                onClick: () => alert("Community"),
+              },
+              {
+                icon: MessageSquare,
+                label: "Forum",
+                onClick: () => alert("Forum"),
+              },
+              {
+                icon: Settings,
+                label: "Settings",
+                onClick: () => alert("Settings"),
+              },
             ].map((item, index) => (
               <a
                 key={index}
                 href="#"
-                className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-600 transition-all hover:translate-x-1 text-white font-medium"
+                className="flex items-center space-x-6 p-6 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition-all hover:translate-x-1 text-white font-medium cursor-pointer"
+                onClick={item.onClick}
               >
-                <item.icon size={28} className="text-white" />
+                <item.icon size={40} className="text-white" />
                 <span
                   className={`text-white whitespace-nowrap transition-opacity duration-300 ${
                     isSidebarOpen
@@ -159,7 +184,7 @@ function App() {
               className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-700 transition-all hover:translate-x-1 cursor-pointer"
               onClick={() => setUser(null)}
             >
-              <LogOut size={28} className="text-white" />
+              <LogOut size={40} className="text-white" />
               <span
                 className={`whitespace-nowrap transition-opacity duration-300 ${
                   isSidebarOpen
@@ -177,6 +202,9 @@ function App() {
         <div className="flex-1 overflow-y-auto">
           {/* Header */}
           <header className="bg-slate-800/50 backdrop-blur-sm p-4 md:p-6 sticky top-0 z-10">
+            <Link href="/sign-up" className="text-blue-500 hover:underline">
+              Sign Up
+            </Link>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <button
@@ -203,7 +231,7 @@ function App() {
           {/* Main Content */}
           <main className="p-4 md:p-6 space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
               {[
                 {
                   label: "Active Debris",
@@ -231,7 +259,7 @@ function App() {
                   className="bg-slate-800/80 backdrop-blur-sm rounded-lg p-4 md:p-6 border border-slate-700 hover:translate-y-[-2px] transition-transform"
                 >
                   <div
-                    className={`${stat.color} w-12 h-12 md:w-20 md:h-20 rounded-lg flex items-center justify-center mb-8`}
+                    className={`${stat.color} w-24 h-24 md:w-32 md:h-32 rounded-lg flex items-center justify-center mb-16`}
                   >
                     <Satellite size={20} className="text-white" />
                   </div>
@@ -311,6 +339,53 @@ function App() {
 
             {/* Recent Alerts */}
             <div className="bg-slate-800/80 backdrop-blur-sm rounded-lg p-4 md:p-6 border border-slate-700">
+              <div className="space-y-4">
+                {[
+                  {
+                    title: "High-Risk Collision Detected",
+                    time: "2 minutes ago",
+                    severity: "high",
+                    onClick: () => alert("High-Risk Collision Detected"),
+                  },
+                  {
+                    title: "New Debris Field Identified",
+                    time: "15 minutes ago",
+                    severity: "medium",
+                    onClick: () => alert("New Debris Field Identified"),
+                  },
+                  {
+                    title: "Satellite Path Adjustment Required",
+                    time: "1 hour ago",
+                    severity: "low",
+                    onClick: () => alert("Satellite Path Adjustment Required"),
+                  },
+                ].map((alert, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg hover:translate-x-1 transition-transform cursor-pointer"
+                    onClick={alert.onClick}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <AlertTriangle
+                        className={
+                          alert.severity === "high"
+                            ? "text-red-500"
+                            : alert.severity === "medium"
+                            ? "text-yellow-500"
+                            : "text-blue-500"
+                        }
+                      />
+                      <div>
+                        <p className="font-medium">{alert.title}</p>
+                        <p className="text-sm text-gray-400">{alert.time}</p>
+                      </div>
+                    </div>
+                    <button className="px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg transition-colors">
+                      View Details
+                    </button>
+                  </div>
+                ))}
+              </div>
               <h2 className="text-lg md:text-xl font-bold mb-4">
                 Recent Alerts
               </h2>
